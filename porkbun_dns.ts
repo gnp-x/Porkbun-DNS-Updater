@@ -1,25 +1,38 @@
 import { $ } from "bun";
 
-async function getIP() {
-  const ip = await $`curl ifconfig.me`.text();
-  return ip.toString();
+async function main() {
+  if (Bun.argv.length < 3 || Bun.argv[2] == "help") {
+    return console.log(
+      "Usage: bun run porkbun_dns.ts <DOMAIN_NAME> [OPTIONAL: SUBDOMAINS]"
+    );
+  }
+  const ip = await getIP();
+  const domainName = domainValidator();
+  if (domainName !== undefined) await updateDomainIP(ip, domainName);
 }
 
-async function updateDomainIP() {
-  const domainName = Bun.argv[2]?.trim();
-  const ip = await getIP();
-  console.log(`Updating ${domainName} porkbun A records to point to ${ip}...`);
+main();
+
+async function getIP() {
+  const ip = await $`curl ifconfig.me`.text();
+  return ip;
+}
+
+function domainValidator() {
+  const domainName = Bun.argv[2];
 
   const urlPattern = new RegExp(
     /^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|([a-zA-Z0-9][a-zA-Z0-9-_]{1,61}[a-zA-Z0-9]))\.([a-zA-Z]{2,6}|[a-zA-Z0-9-]{2,30}\.[a-zA-Z]{2,3})$/
   );
 
   if (domainName === undefined || urlPattern.test(domainName) === false) {
-    return console.log("Please put in a valid domain name.");
+    console.log("Please put in a valid domain name.");
+  } else {
+    return domainName;
   }
+}
 
-  const subdomains: string[] = Bun.argv.slice(3);
-
+async function updateDomainIP(ip: string, domainName: string) {
   const options = {
     method: "POST",
     body: JSON.stringify({
@@ -29,6 +42,8 @@ async function updateDomainIP() {
       ttl: "600",
     }),
   };
+
+  console.log(`Updating ${domainName} porkbun A records to point to ${ip}...`);
 
   // update non-prefix record.
   const url = `https://api.porkbun.com/api/json/v3/dns/editByNameType/${domainName}/A`;
@@ -44,6 +59,7 @@ async function updateDomainIP() {
     );
   }
 
+  const subdomains: string[] = Bun.argv.slice(3);
   if (subdomains.length == 0) return;
 
   // update ip for all subdomains listed as arguments
@@ -53,5 +69,3 @@ async function updateDomainIP() {
     console.log(`${url} has been updated to point to ${ip}`);
   }
 }
-
-await updateDomainIP();
