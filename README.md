@@ -50,7 +50,7 @@ bun run porkbun_dns.ts example.com www blog
 - Updates https://www.example.com
 - Updates https://blog.example.com
 
-You can add on as many domains as you'd like and it will handle them all as long as the records exist.
+You can add on as many subdomains as you'd like and it will handle them all as long as the records exist in porkbun.
 
 ### Recommendation
 
