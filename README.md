@@ -1,4 +1,4 @@
-# Porkbun-DNS-Updater
+# Porkbun DNS Updater
 
 Porkbun DNS Updater will update the IP address for all A records for your porkbun domain and subdomains if provided. This is helpful for those that are self-hosting or don't have a static IP.
 
