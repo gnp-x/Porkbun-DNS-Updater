@@ -2,7 +2,9 @@
 
 Porkbun DNS Updater will update the IP address for all A records for your porkbun domain and subdomains if provided. This is helpful for those that are self-hosting or don't have a static IP.
 
-It requires the bun runtime, which you can install from https://bun.com.
+It requires the bun* runtime, which you can install from https://bun.com. 
+
+*No, I didn't choose bun because bun is in porkbun (I'm not that clever). I did it because it's better than node.
 
 ```bash
 # To install bun globally
