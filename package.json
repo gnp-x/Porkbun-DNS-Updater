@@ -1,6 +1,6 @@
 {
   "name": "porkbun_dns",
-  "module": "index.ts",
+  "module": "porkbun_dns.ts",
   "type": "module",
   "private": true,
   "devDependencies": {
