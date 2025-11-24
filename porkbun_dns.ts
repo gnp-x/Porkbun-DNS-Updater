@@ -16,7 +16,7 @@ async function main() {
   }
   const ip = await getIP();
   const domainName = domainValidator() as string;
-  const subdomains: string[] = (await getSubdomains(domainName)) as string[];
+  const subdomains: string[] = await getSubdomains(domainName);
   await updateDomainIP(ip, domainName, subdomains);
 }
 
@@ -49,12 +49,12 @@ async function getSubdomains(domainName: string) {
       apikey: Bun.env.apikey,
     }),
   };
+  const subdomains: string[] = [];
   try {
     const res = await fetch(url, options);
     const list = await res.body?.json();
     const records: recordsObject[] = list.records;
     const aRecords = records.filter((e) => e.type === "A");
-    const subdomains: string[] = [];
     aRecords.forEach((e) => {
       const subdomain = e.name.split(".")[0];
       if (subdomain !== undefined)
@@ -62,7 +62,10 @@ async function getSubdomains(domainName: string) {
     });
     return subdomains;
   } catch (error) {
-    console.error(`There was an issue fetching subdomains of ${domainName}`);
+    console.log(
+      `Unable to fetch subdomains of ${domainName}... Processing root domain name.`
+    );
+    return subdomains;
   }
 }
 
