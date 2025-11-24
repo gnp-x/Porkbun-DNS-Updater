@@ -26,12 +26,7 @@ secretapikey='YOUR_SECRET_KEY'
 apikey='YOUR_API_KEY'
 ```
 
-```bash
-# To run:
-bun run porkbun_dns.ts help
-```
-
-### Examples:
+### Example:
 
 This will update the non-prefixed A record for the domain and its subdomains.
 
