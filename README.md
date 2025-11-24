@@ -33,26 +33,11 @@ bun run porkbun_dns.ts help
 
 ### Examples:
 
-This will update the non-prefixed A record for the domain and its subdomain www.
+This will update the non-prefixed A record for the domain and its subdomains.
 
 ```bash
-bun run porkbun_dns.ts example.com www
+bun run porkbun_dns.ts example.com
 ```
-
-- Updates https://example.com
-- Updates https://www.example.com
-
-This will update the non-prefixed A record and the A records for the subdomains www and blog.
-
-```bash
-bun run porkbun_dns.ts example.com www blog
-```
-
-- Updates https://example.com
-- Updates https://www.example.com
-- Updates https://blog.example.com
-
-You can add on as many subdomains as you'd like and it will handle them all as long as the records exist in porkbun.
 
 ### Recommendation
 

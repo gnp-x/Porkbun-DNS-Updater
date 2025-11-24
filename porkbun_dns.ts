@@ -1,14 +1,23 @@
 import { $ } from "bun";
 
+interface recordsObject {
+  id: string;
+  name: string;
+  type: string;
+  content: string;
+  ttl: string;
+  prio: string;
+  notes: string;
+}
+
 async function main() {
   if (Bun.argv.length < 3 || Bun.argv[2] == "help") {
-    return console.log(
-      "Usage: bun run porkbun_dns.ts <DOMAIN_NAME> [OPTIONAL: SUBDOMAINS]"
-    );
+    return console.log("Usage: bun run porkbun_dns.ts <DOMAIN_NAME>");
   }
   const ip = await getIP();
-  const domainName = domainValidator();
-  if (domainName !== undefined) await updateDomainIP(ip, domainName);
+  const domainName = domainValidator() as string;
+  const subdomains: string[] = (await getSubdomains(domainName)) as string[];
+  await updateDomainIP(ip, domainName, subdomains);
 }
 
 main();
@@ -20,7 +29,6 @@ async function getIP() {
 
 function domainValidator() {
   const domainName = Bun.argv[2];
-
   const urlPattern = new RegExp(
     /^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|([a-zA-Z0-9][a-zA-Z0-9-_]{1,61}[a-zA-Z0-9]))\.([a-zA-Z]{2,6}|[a-zA-Z0-9-]{2,30}\.[a-zA-Z]{2,3})$/
   );
@@ -32,7 +40,37 @@ function domainValidator() {
   }
 }
 
-async function updateDomainIP(ip: string, domainName: string) {
+async function getSubdomains(domainName: string) {
+  const url = `https://api.porkbun.com/api/json/v3/dns/retrieve/${domainName}`;
+  const options = {
+    method: "POST",
+    body: JSON.stringify({
+      secretapikey: Bun.env.secretapikey,
+      apikey: Bun.env.apikey,
+    }),
+  };
+  try {
+    const res = await fetch(url, options);
+    const list = await res.body?.json();
+    const records: recordsObject[] = list.records;
+    const aRecords = records.filter((e) => e.type === "A");
+    const subdomains: string[] = [];
+    aRecords.forEach((e) => {
+      const subdomain = e.name.split(".")[0];
+      if (subdomain !== undefined)
+        if (!domainName.includes(subdomain)) subdomains.push(subdomain);
+    });
+    return subdomains;
+  } catch (error) {
+    console.error(`There was an issue fetching subdomains of ${domainName}`);
+  }
+}
+
+async function updateDomainIP(
+  ip: string,
+  domainName: string,
+  subdomains: string[]
+) {
   const options = {
     method: "POST",
     body: JSON.stringify({
@@ -59,7 +97,6 @@ async function updateDomainIP(ip: string, domainName: string) {
     );
   }
 
-  const subdomains: string[] = Bun.argv.slice(3);
   if (subdomains.length == 0) return;
 
   // update ip for all subdomains listed as arguments
