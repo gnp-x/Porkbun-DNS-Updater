@@ -27,10 +27,9 @@ async function getIP() {
     const ip = await $`curl ifconfig.me`.text();
     return ip;
   } catch (error) {
-    console.error(
+    throw new Error(
       "Unable to fetch public IP. Service may be down. Try again later."
-    );
-    process.exit(1);
+    ).message;
   }
 }
 
@@ -41,8 +40,7 @@ function domainValidator() {
   );
 
   if (domainName === undefined || urlPattern.test(domainName) === false) {
-    console.error("Please put in a valid domain name.");
-    process.exit(1);
+    throw new Error("Please put in a valid domain name.").message;
   }
   return domainName;
 }
