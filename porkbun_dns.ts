@@ -40,7 +40,7 @@ function domainValidator() {
   );
 
   if (domainName === undefined || urlPattern.test(domainName) === false) {
-    console.log("Please put in a valid domain name.");
+    console.error("Please put in a valid domain name.");
   } else {
     return domainName;
   }
@@ -68,9 +68,7 @@ async function getSubdomains(domainName: string) {
     });
     return subdomains;
   } catch (error) {
-    console.log(
-      `Unable to fetch subdomains of ${domainName}... Processing root domain name.`
-    );
+    console.error(error);
     return subdomains;
   }
 }
@@ -101,7 +99,7 @@ async function updateDomainIP(
   } else if (res.status === 400) {
     return console.log("IP is the same, no changes to be made.");
   } else {
-    return console.log(
+    return console.error(
       "There was an issue executing the program. Make sure your environment variables are set correctly."
     );
   }
