@@ -89,7 +89,7 @@ async function updateDomainIP(
 
   if (res.status === 200) {
     console.log(`${url} has been updated to point to ${ip}`);
-  } else if (res.status == 400) {
+  } else if (res.status === 400) {
     return console.log("IP is the same, no changes to be made.");
   } else {
     return console.log(
@@ -97,12 +97,12 @@ async function updateDomainIP(
     );
   }
 
-  if (subdomains.length == 0) return;
+  if (subdomains.length === 0) return;
 
   // update ip for all subdomains listed as arguments
   for (let i = 0; i < subdomains.length; i++) {
-    const url = `https://api.porkbun.com/api/json/v3/dns/editByNameType/${domainName}/A/${subdomains[i]}`;
-    await fetch(url, options);
-    console.log(`${url} has been updated to point to ${ip}`);
+    const subdomainUrl = `${url}/${subdomains[i]}`;
+    await fetch(subdomainUrl, options);
+    console.log(`${subdomainUrl} has been updated to point to ${ip}`);
   }
 }
