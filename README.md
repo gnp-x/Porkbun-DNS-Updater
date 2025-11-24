@@ -4,7 +4,7 @@ Porkbun DNS Updater will update the IP address for all A records for your porkbu
 
 It requires the bun* runtime, which you can install from https://bun.com. 
 
-*No, I didn't choose bun because bun is in porkbun (I'm not that clever). I did it because it's better than node.
+*No, I didn't choose bun because bun is in porkbun (I *wish* I was that clever). I did it because it's better than node.
 
 ```bash
 # To install bun globally
