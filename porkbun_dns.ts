@@ -14,7 +14,7 @@ async function main() {
   if (Bun.argv.length < 3 || Bun.argv[2] == "help") {
     return console.log("Usage: bun run porkbun_dns.ts <DOMAIN_NAME>");
   }
-  const ip = await getIP();
+  const ip = (await getIP()) as string;
   const domainName = domainValidator() as string;
   const subdomains: string[] = await getSubdomains(domainName);
   await updateDomainIP(ip, domainName, subdomains);
@@ -23,8 +23,14 @@ async function main() {
 main();
 
 async function getIP() {
-  const ip = await $`curl ifconfig.me`.text();
-  return ip;
+  try {
+    const ip = await $`curl ifconfig.me`.text();
+    return ip;
+  } catch (error) {
+    return console.error(
+      "Unable to fetch public IP. Service may be down. Try again later."
+    );
+  }
 }
 
 function domainValidator() {
