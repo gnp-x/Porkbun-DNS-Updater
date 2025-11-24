@@ -14,8 +14,8 @@ async function main() {
   if (Bun.argv.length < 3 || Bun.argv[2] == "help") {
     return console.log("Usage: bun run porkbun_dns.ts <DOMAIN_NAME>");
   }
-  const ip = (await getIP()) as string;
-  const domainName = domainValidator() as string;
+  const ip = await getIP();
+  const domainName = domainValidator();
   const subdomains: string[] = await getSubdomains(domainName);
   await updateDomainIP(ip, domainName, subdomains);
 }
@@ -27,9 +27,10 @@ async function getIP() {
     const ip = await $`curl ifconfig.me`.text();
     return ip;
   } catch (error) {
-    return console.error(
+    console.error(
       "Unable to fetch public IP. Service may be down. Try again later."
     );
+    process.exit(1);
   }
 }
 
@@ -41,9 +42,9 @@ function domainValidator() {
 
   if (domainName === undefined || urlPattern.test(domainName) === false) {
     console.error("Please put in a valid domain name.");
-  } else {
-    return domainName;
+    process.exit(1);
   }
+  return domainName;
 }
 
 async function getSubdomains(domainName: string) {
