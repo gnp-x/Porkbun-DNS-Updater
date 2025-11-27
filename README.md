@@ -1,4 +1,4 @@
-> ### **Updates to this script will only occur at:** https://codeberg.org/gnp/Porkbun-DNS-Updater
+> ### **Updates to this script will only occur at:** https://codeberg.org/gnp/porkbun-dns-updater
 
 # Porkbun DNS Updater
 
