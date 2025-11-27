@@ -1,6 +1,6 @@
-# Porkbun DNS Updater
+> ### **Updates to this script will only occur at:** https://codeberg.org/gnp/Porkbun-DNS-Updater
 
-**Updates to this script will only occur at:** https://codeberg.org/gnp/Porkbun-DNS-Updater
+# Porkbun DNS Updater
 
 Porkbun DNS Updater will update the IP address for all A records for your porkbun domain and subdomains based on the public IP of said machine. This is helpful for those that are self-hosting and don't have a static IP.
 
